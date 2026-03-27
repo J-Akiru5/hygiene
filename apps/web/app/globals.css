@@ -14,6 +14,56 @@ body {
   overflow-x: hidden;
 }
 
+.bathroom-wall {
+  background-color: #d5edf8;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.8) 2px, transparent 2px);
+  background-size: 120px 62px;
+}
+
+.bathroom-floor {
+  background-color: #c0e4f1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.8) 2px, transparent 2px);
+  background-size: 110px 38px;
+  border-top: 3px solid rgba(255, 255, 255, 0.9);
+}
+
+.bathroom-bubbles {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 12%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 12%);
+  background-size: 200px 200px, 300px 300px;
+  background-position: 0 0, 50px 50px;
+}
+
+.game-title {
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
+
+.game-progress {
+  appearance: none;
+  border: 3px solid #000;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: #e5e7eb;
+}
+
+.game-progress::-webkit-progress-bar {
+  background-color: #e5e7eb;
+}
+
+.game-progress::-webkit-progress-value {
+  background-color: #c8dfd8;
+  transition: width 300ms ease;
+}
+
+.game-progress::-moz-progress-bar {
+  background-color: #c8dfd8;
+}
+
 /* Animations */
 @keyframes bounce {
   0%, 100% { transform: translateY(-10%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }

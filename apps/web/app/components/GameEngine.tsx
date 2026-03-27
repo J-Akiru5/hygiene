@@ -62,22 +62,16 @@ export function GameEngine() {
       </Modal>
 
       {/* Main Canvas - Central Girl */}
-      <div className="absolute inset-0 flex flex-col items-center justify-end z-10 w-full h-full pointer-events-none">
-         {/* Push the canvas towards the bottom-center as seen in mockup */}
-         <div className="relative w-full h-full pointer-events-auto flex items-end justify-center pb-0">
-           <CanvasEraser activeTool={activeTool} onProgressChange={setProgress} winState={winState} playScrub={playScrub} />
-         </div>
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        <div className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[44%] min-w-[320px] max-w-[560px] pointer-events-auto">
+          <CanvasEraser activeTool={activeTool} onProgressChange={setProgress} winState={winState} playScrub={playScrub} />
+        </div>
       </div>
 
       {/* Top Left Progress Area */}
-      <div className="absolute top-8 left-8 bg-[#f5fbff] border-4 border-black rounded-[1.5rem] p-4 w-80 z-20 shadow-[4px_4px_0px_#000]">
+      <div className="absolute top-[3.5%] left-[2%] bg-[#f5fbff] border-4 border-black rounded-[1.5rem] p-4 w-[24%] min-w-[210px] max-w-[330px] z-20 shadow-[4px_4px_0px_#000]">
         <div className="flex items-center gap-4">
-          <div className="flex-1 bg-gray-200 rounded-full h-8 border-[3px] border-black overflow-hidden relative">
-            <div 
-              className="absolute top-0 left-0 h-full transition-all duration-300" 
-              style={{ width: `${progress}%`, backgroundColor: "#c8dfd8" }} // Pale mint green from Mock 2
-            />
-          </div>
+          <progress className="game-progress flex-1 h-8" max={100} value={Math.round(progress)} />
           <span className="font-extrabold text-2xl">{Math.round(progress)}%</span>
         </div>
         <div className="flex justify-start gap-6 mt-4 ml-6">
@@ -88,20 +82,20 @@ export function GameEngine() {
       </div>
 
       {/* Mid Left Instructions */}
-      <div className="absolute top-48 left-8 bg-[#f5fbff] border-4 border-black rounded-[1.2rem] p-5 w-80 z-20 shadow-[4px_4px_0px_#000]">
+      <div className="absolute top-[27%] left-[2%] bg-[#f5fbff] border-4 border-black rounded-[1.2rem] p-5 w-[30%] min-w-[250px] max-w-[430px] z-20 shadow-[4px_4px_0px_#000]">
          <p className="font-bold text-xl text-center leading-snug tracking-tight text-gray-800">
            Goal: Make the messy girl sparkling clean! Tap a tool on the right to start.
          </p>
       </div>
 
       {/* Title Badge Top Center */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-[#e0f1fa] border-[4px] border-black rounded-xl px-6 py-3 z-20 shadow-[4px_4px_0px_#000] text-center">
-         <h1 className="text-3xl font-black uppercase text-[#88cdda] tracking-tighter leading-none" style={{textShadow: "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000"}}>HYGIENE HERO:</h1>
-         <h2 className="text-xl font-bold text-black tracking-tight leading-none mt-1">The Get-Clean Challenge!</h2>
+      <div className="absolute top-[3.7%] left-1/2 -translate-x-1/2 bg-[#e0f1fa] border-[4px] border-black rounded-3xl px-8 py-3 z-20 shadow-[4px_4px_0px_#000] text-center min-w-[380px]">
+        <h1 className="game-title text-[58px] leading-[0.92] font-black uppercase text-[#88cdda] tracking-tight">HYGIENE HERO:</h1>
+        <h2 className="text-[31px] leading-[0.95] font-black text-black tracking-tight mt-1">The Get-Clean Challenge!</h2>
       </div>
 
       {/* Right Tool Tray */}
-      <div className="absolute top-6 bottom-6 right-6 w-52 z-20">
+      <div className="absolute top-[2.4%] bottom-[2.4%] right-[1.8%] w-[18.6%] min-w-[190px] max-w-[255px] z-20">
         <ToolTray activeTool={activeTool} setActiveTool={(t) => { setActiveTool(t); playBlip(); }} />
       </div>
     </>
