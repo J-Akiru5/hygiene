@@ -8,6 +8,7 @@ interface CanvasEraserProps {
   activeTool: ToolType;
   onProgressChange: (progress: number) => void;
   winState: boolean;
+  playScrub?: (isScrubbing: boolean) => void;
 }
 
 // Approximate hitboxes relative to canvas width/height (0.0 to 1.0)
@@ -20,7 +21,7 @@ const ZONES = [
   { id: "Face", tool: "Washcloth", rects: [{ x: 0.25, y: 0.20, w: 0.5, h: 0.45 }] },
 ];
 
-export function CanvasEraser({ activeTool, onProgressChange, winState }: CanvasEraserProps) {
+export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub }: CanvasEraserProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -150,6 +151,7 @@ export function CanvasEraser({ activeTool, onProgressChange, winState }: CanvasE
     setIsDrawing(true);
     setLastPos({ x, y });
     eraseAt(x, y, x, y);
+    playScrub?.(true);
   };
 
   const draw = (e: React.PointerEvent) => {
@@ -164,6 +166,7 @@ export function CanvasEraser({ activeTool, onProgressChange, winState }: CanvasE
       // Stop drawing if they stray out of the zone
       setLastPos(null);
       setIsDrawing(false);
+      playScrub?.(false);
     }
   };
 
@@ -173,6 +176,7 @@ export function CanvasEraser({ activeTool, onProgressChange, winState }: CanvasE
       setLastPos(null);
       // Calculate progress periodically (on mouse up is most efficient)
       calculateProgress();
+      playScrub?.(false);
     }
   };
 
