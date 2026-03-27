@@ -13,6 +13,23 @@ export function GameEngine() {
   const [winState, setWinState] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
+  const [pointerPos, setPointerPos] = useState({ x: -100, y: -100 });
+
+  useEffect(() => {
+    if (!activeTool) return;
+    const handleMove = (e: PointerEvent) => setPointerPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("pointermove", handleMove);
+    return () => window.removeEventListener("pointermove", handleMove);
+  }, [activeTool]);
+
+  const getToolImage = (tool: ToolType) => {
+    switch (tool) {
+      case "Toothbrush": return "/assets/toothbrush.png";
+      case "Cotton Swab": return "/assets/swabs.png";
+      case "Washcloth": return "/assets/towel.png";
+      default: return null;
+    }
+  };
 
   const { initAudio, isReady, playBGM, playWin, stopBGM, playBlip, setupScrubbing, playScrub } = useSound();
 
@@ -70,8 +87,8 @@ export function GameEngine() {
       </Modal>
 
       {/* Fixed reference scene to keep every element in one coordinate system */}
-      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0">
+      <div className={`absolute inset-0 z-10 overflow-hidden pointer-events-auto ${activeTool ? 'cursor-none' : ''}`}>
+        <div className="absolute inset-0 pointer-events-none">
           {/* Main Canvas - Central Girl */}
           <div className="absolute left-[31.5%] top-[23.7%] z-10 w-[38.9%] pointer-events-auto">
             <CanvasEraser activeTool={activeTool} onProgressChange={setProgress} winState={winState} playScrub={playScrub} />
@@ -105,10 +122,45 @@ export function GameEngine() {
 
           {/* Right Tool Tray */}
           {isDesktop && (
-            <div className="absolute right-[2.1%] top-[2.6%] z-20 h-[94.8%] w-[22.4%]">
+            <div className="absolute right-[2.1%] top-[2.6%] z-20 h-[94.8%] w-[22.4%] pointer-events-auto">
               <ToolTray activeTool={activeTool} setActiveTool={(t) => { setActiveTool(t); playBlip(); }} />
             </div>
           )}
+
+          {/* Custom Cursor Overlay */}
+          {activeTool && pointerPos.x > -1 && (
+            <div 
+              className="fixed z-[9999] pointer-events-none"
+              style={{ 
+                left: pointerPos.x, 
+                top: pointerPos.y, 
+                transform: "translate(-20%, -20%)" 
+              }}
+            >
+              <img 
+                src={getToolImage(activeTool) || ""} 
+                alt={activeTool} 
+                className="h-[14vh] w-auto object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] animate-pulse" 
+              />
+            </div>
+          )}
+
+          {/* Exit Game Button  */}
+          {hasStarted && (
+            <button
+              onClick={() => {
+                setHasStarted(false);
+                setProgress(0);
+                setActiveTool(null);
+                setWinState(false);
+                stopBGM();
+              }}
+              className="absolute bottom-[3%] left-[2%] z-50 bg-[#ff4a4a] text-white font-black text-[clamp(14px,2.5vh,24px)] px-[2%] py-[1%] rounded-[1rem] border-[3px] border-black shadow-[3px_3px_0px_#000] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer pointer-events-auto"
+            >
+              EXIT GAME
+            </button>
+          )}
+
         </div>
 
         {/* Mobile fallback note when desktop tray is intentionally hidden */}

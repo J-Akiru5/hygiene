@@ -12,8 +12,11 @@ Initialize a Turborepo-based Monorepo and build the "Hygiene Hero" Next.js mini-
   - `Canvas` (Dirt Overlay) on top, identical width/height.
 - **Events**:
   - `onPointerDown/Move/Up` captured by the Canvas. Coordinates will be mapped to the actual canvas drawing space regardless of scaling.
+  - Global `onPointerMove` tracks cursor for the Custom Tool Image Overlay.
 - **Validation**:
   - `isValidScrub(x, y, tool)` checks if `(x,y)` is within arbitrary zones (Teeth, Ears, Face).
+- **Effects**:
+  - Particle System emits styled HTML elements on successful scrubs, removed after CSS animation duration.
 
 ## 3. UI/Shared Components First
 Following the Shared First heuristic, we'll design:

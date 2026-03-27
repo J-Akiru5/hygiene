@@ -28,6 +28,24 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
   const [lastPos, setLastPos] = useState<{ x: number; y: number } | null>(null);
   const [baselinePixels, setBaselinePixels] = useState<number>(0);
 
+  interface Particle { id: number; x: number; y: number; size: number; color: string; }
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const particleIdRef = useRef(0);
+
+  const spawnParticle = (x: number, y: number, canvasW: number, canvasH: number) => {
+    if (Math.random() > 0.3) return; // 30% spawn chance
+    const id = ++particleIdRef.current;
+    const newP = { 
+      id, 
+      x: (x / canvasW) * 100, 
+      y: (y / canvasH) * 100,
+      size: Math.random() * 20 + 20,
+      color: activeTool === "Toothbrush" ? "#ffffff" : activeTool === "Washcloth" ? "#c8f0d8" : "#ffe0cc"
+    };
+    setParticles(prev => [...prev.slice(-15), newP]);
+    setTimeout(() => setParticles(prev => prev.filter(p => p.id !== id)), 600);
+  };
+
   // Load and draw the dirt
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -143,6 +161,9 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
   const startDrawing = (e: React.PointerEvent) => {
     // Need a tool to scrub
     if (!activeTool) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
     e.preventDefault();
     const { x, y } = getCanvasCoords(e);
     if (!isPointInValidZone(x, y)) return;
@@ -150,17 +171,22 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
     setIsDrawing(true);
     setLastPos({ x, y });
     eraseAt(x, y, x, y);
+    spawnParticle(x, y, canvas.width, canvas.height);
     playScrub?.(true);
   };
 
   const draw = (e: React.PointerEvent) => {
     if (!isDrawing || !lastPos || !activeTool) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
     e.preventDefault();
     const { x, y } = getCanvasCoords(e);
     
     if (isPointInValidZone(x, y)) {
       eraseAt(lastPos.x, lastPos.y, x, y);
       setLastPos({ x, y });
+      spawnParticle(x, y, canvas.width, canvas.height);
     } else {
       // Stop drawing if they stray out of the zone
       setLastPos(null);
@@ -202,7 +228,7 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
 
   return (
     <div 
-      className="relative w-full bg-transparent group cursor-crosshair touch-none select-none"
+      className={`relative w-full bg-transparent group touch-none select-none overflow-hidden ${activeTool ? 'cursor-none' : 'cursor-crosshair'}`}
     >
       {/* Base Image underneath */}
       <img
@@ -221,6 +247,25 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
         onPointerLeave={stopDrawing}
         onPointerCancel={stopDrawing}
       />
+
+      {/* Particles Overlay */}
+      <div className="absolute inset-0 pointer-events-none z-50">
+        {particles.map(p => (
+          <div
+            key={p.id}
+            className="absolute rounded-full animate-float-fade"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: p.size,
+              height: p.size,
+              backgroundColor: p.color,
+              boxShadow: `0 0 8px ${p.color}`,
+              transform: 'translate(-50%, -50%)'
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
