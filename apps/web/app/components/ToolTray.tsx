@@ -15,11 +15,11 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
   return (
     <div className="w-full h-full relative group touch-none select-none">
       {/* Wooden Background Base */}
-      <div className="absolute inset-0 bg-[#d1a67a] rounded-[2.5rem] border-[8px] border-[#9b6840] shadow-[inset_0_0_30px_rgba(0,0,0,0.15)] overflow-hidden">
+      <div className="absolute inset-0 bg-[#d1a67a] rounded-[2rem] border-[6px] border-[#9b6840] shadow-[inset_0_0_30px_rgba(0,0,0,0.15)] overflow-hidden">
         <img src="/assets/wooden-platform.png" alt="Tool board" className="absolute inset-0 w-full h-full object-cover opacity-85" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-between h-full py-8 px-2">
+      <div className="relative z-10 flex flex-col items-center justify-between h-full py-[clamp(10px,2vh,28px)] px-1.5">
         
         {/* Tool 1: Toothbrush */}
         <div 
@@ -42,9 +42,9 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
         >
           {/* Pointer Hint - Only shows if no tool is selected yet */}
           {!activeTool && (
-            <div className="absolute -left-[9.8rem] top-1/2 -translate-y-1/2 flex items-center gap-2 animate-pulse drop-shadow-lg pointer-events-none">
-               <span className="font-extrabold text-[46px] leading-none text-black whitespace-nowrap hidden xl:block">Tap &amp; Drag</span>
-               <img src="/assets/icon-finger.png" alt="Pointer" className="w-14 h-14 hidden xl:block" onError={(e) => e.currentTarget.style.display='none'} />
+            <div className="absolute -left-[8.5rem] top-1/2 -translate-y-1/2 flex items-center gap-2 animate-pulse drop-shadow-lg pointer-events-none">
+              <span className="font-extrabold text-[clamp(20px,2.6vw,42px)] leading-none text-black whitespace-nowrap hidden lg:block">Tap &amp; Drag</span>
+              <img src="/assets/icon-finger.png" alt="Pointer" className="w-[clamp(28px,3.2vw,56px)] h-[clamp(28px,3.2vw,56px)] hidden lg:block" onError={(e) => e.currentTarget.style.display='none'} />
             </div>
           )}
 
