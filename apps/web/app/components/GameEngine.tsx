@@ -78,29 +78,29 @@ export function GameEngine() {
           </div>
 
           {/* Top Left Progress Area */}
-          <div className="absolute left-[1.9%] top-[2.3%] z-20 w-[23.6%] rounded-[1.6rem] border-[4px] border-black bg-[#f5fbff] px-[5%] py-[4%] shadow-[4px_4px_0px_#000]">
+          <div className="absolute left-[1.9%] top-[2.3%] z-20 w-[23.6%] rounded-[1.6rem] border-[4px] border-black bg-[#f5fbff] px-[3%] py-[2%] shadow-[4px_4px_0px_#000]">
             <div className="flex items-center gap-3">
               <progress className="game-progress h-[clamp(18px,3.2vh,34px)] flex-1" max={100} value={Math.round(progress)} />
-              <span className="text-[clamp(18px,2.2vw,34px)] leading-none font-extrabold text-[#1b1b1b]">{Math.round(progress)}%</span>
+              <span className="text-[clamp(18px,3.9vh,34px)] leading-none font-extrabold text-[#1b1b1b]">{Math.round(progress)}%</span>
             </div>
-            <div className="mt-3 ml-1 flex items-center justify-start gap-[clamp(10px,1.2vw,26px)]">
-              <img src="/assets/teeth.png" alt="Tooth" className={`h-[clamp(24px,2.5vw,44px)] w-[clamp(24px,2.5vw,44px)] object-contain ${progress > 33 ? "opacity-100 grayscale-0" : "opacity-45 grayscale"}`} />
-              <img src="/assets/eras.png" alt="Ear" className={`h-[clamp(24px,2.5vw,44px)] w-[clamp(24px,2.5vw,44px)] object-contain ${progress > 66 ? "opacity-100 grayscale-0" : "opacity-45 grayscale"}`} />
-              <img src="/assets/face.png" alt="Face" className={`h-[clamp(24px,2.5vw,44px)] w-[clamp(24px,2.5vw,44px)] object-contain ${progress > 94 ? "opacity-100 grayscale-0" : "opacity-45 grayscale"}`} />
+            <div className="mt-3 ml-1 flex items-center justify-start gap-[clamp(10px,2.1vh,26px)]">
+              <img src="/assets/teeth.png" alt="Tooth" className={`h-[clamp(24px,4.4vh,44px)] w-[clamp(24px,4.4vh,44px)] object-contain ${progress > 33 ? "opacity-100 grayscale-0" : "opacity-45 grayscale"}`} />
+              <img src="/assets/eras.png" alt="Ear" className={`h-[clamp(24px,4.4vh,44px)] w-[clamp(24px,4.4vh,44px)] object-contain ${progress > 66 ? "opacity-100 grayscale-0" : "opacity-45 grayscale"}`} />
+              <img src="/assets/face.png" alt="Face" className={`h-[clamp(24px,4.4vh,44px)] w-[clamp(24px,4.4vh,44px)] object-contain ${progress > 94 ? "opacity-100 grayscale-0" : "opacity-45 grayscale"}`} />
             </div>
           </div>
 
           {/* Mid Left Instructions */}
-          <div className="absolute left-[1.8%] top-[24.5%] z-20 w-[29.9%] rounded-[1.5rem] border-[4px] border-black bg-[#f5fbff] px-[6.5%] py-[5.5%] shadow-[4px_4px_0px_#000]">
-            <p className="text-center text-[clamp(16px,2vw,44px)] font-bold leading-[1.06] tracking-tight text-[#1f1f1f]">
+          <div className="absolute left-[1.8%] top-[24.5%] z-20 w-[29.9%] rounded-[1.5rem] border-[4px] border-black bg-[#f5fbff] px-[4%] py-[3%] shadow-[4px_4px_0px_#000]">
+            <p className="text-center text-[clamp(16px,3.5vh,44px)] font-bold leading-[1.06] tracking-tight text-[#1f1f1f]">
               Goal: Make the messy girl sparkling clean! Tap a tool on the right to start.
             </p>
           </div>
 
           {/* Title Badge Top Center */}
-          <div className="absolute left-[35.6%] top-[2.6%] z-20 w-[31.9%] rounded-[1.9rem] border-[4px] border-black bg-[#eefaff] px-[4.3%] py-[2.2%] text-center shadow-[4px_4px_0px_#000]">
-            <h1 className="game-title text-[clamp(30px,4.3vw,60px)] leading-[0.84] font-black uppercase tracking-tight text-[#9edff0]">HYGIENE HERO:</h1>
-            <h2 className="mt-1 text-[clamp(16px,2.25vw,32px)] leading-[0.95] font-black tracking-tight text-black">The Get-Clean Challenge!</h2>
+          <div className="absolute left-[35.6%] top-[2.6%] z-20 w-[31.9%] rounded-[1.9rem] border-[4px] border-black bg-[#eefaff] px-[2.5%] py-[1.5%] text-center shadow-[4px_4px_0px_#000]">
+            <h1 className="game-title text-[clamp(20px,6vh,60px)] leading-[0.84] font-black uppercase tracking-tight text-[#9edff0]">HYGIENE HERO:</h1>
+            <h2 className="mt-1 text-[clamp(14px,3vh,32px)] leading-[0.95] font-black tracking-tight text-black">The Get-Clean Challenge!</h2>
           </div>
 
           {/* Right Tool Tray */}
