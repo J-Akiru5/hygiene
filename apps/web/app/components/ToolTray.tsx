@@ -19,7 +19,7 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
         <img src="/assets/wooden-platform.png" alt="Tool board" className="absolute inset-0 w-full h-full object-cover opacity-85" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-between h-full py-[clamp(10px,2vh,28px)] px-1.5">
+      <div className="relative z-10 flex h-full flex-col items-center justify-between px-2 py-6">
         
         {/* Tool 1: Toothbrush */}
         <div 
@@ -27,11 +27,11 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
           className={`flex flex-col items-center gap-1 cursor-pointer transition-transform duration-200 p-2 rounded-2xl ${activeTool === "Toothbrush" ? "scale-[1.07] bg-white/20 ring-4 ring-white/50" : "hover:scale-105"}`}
         >
           {/* Target Icon */}
-          <img src="/assets/teeth.png" alt="Tooth" className="w-9 h-9 drop-shadow-md" onError={(e) => e.currentTarget.style.display='none'} />
+          <img src="/assets/teeth.png" alt="Tooth" className="h-10 w-10 drop-shadow-md" onError={(e) => e.currentTarget.style.display = 'none'} />
           
-          <div className="flex items-center gap-2 mt-1">
-             <img src="/assets/toothbrush.png" alt="Toothbrush" className="w-12 h-32 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src="https://placehold.co/40x120/4ade80/fff?text=Brush"}} />
-             <img src="/assets/toothpaste.png" alt="Toothpaste" className="w-14 h-24 object-contain drop-shadow-xl translate-y-4" onError={(e) => { e.currentTarget.src="https://placehold.co/50x100/38bdf8/fff?text=Paste"}} />
+          <div className="mt-1 flex items-end gap-2">
+            <img src="/assets/toothbrush.png" alt="Toothbrush" className="h-36 w-14 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src = "https://placehold.co/40x120/4ade80/fff?text=Brush" }} />
+            <img src="/assets/toothpaste.png" alt="Toothpaste" className="h-28 w-16 translate-y-2 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src = "https://placehold.co/50x100/38bdf8/fff?text=Paste" }} />
           </div>
         </div>
 
@@ -48,8 +48,8 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
             </div>
           )}
 
-          <img src="/assets/eras.png" alt="Ear" className="w-9 h-9 drop-shadow-md" onError={(e) => e.currentTarget.style.display='none'} />
-          <img src="/assets/swabs.png" alt="Cotton Swabs" className="w-20 h-24 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src="https://placehold.co/80x100/e2e8f0/64748b?text=Swabs"}} />
+          <img src="/assets/eras.png" alt="Ear" className="h-10 w-10 drop-shadow-md" onError={(e) => e.currentTarget.style.display = 'none'} />
+          <img src="/assets/swabs.png" alt="Cotton Swabs" className="h-28 w-24 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src = "https://placehold.co/80x100/e2e8f0/64748b?text=Swabs" }} />
         </div>
 
         {/* Tool 3: Washcloth */}
@@ -57,11 +57,11 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
           onClick={() => setActiveTool("Washcloth")}
           className={`flex flex-col items-center gap-2 cursor-pointer transition-transform duration-200 p-2 rounded-2xl ${activeTool === "Washcloth" ? "scale-[1.07] bg-white/20 ring-4 ring-white/50" : "hover:scale-105"}`}
         >
-          <img src="/assets/face.png" alt="Face" className="w-9 h-9 drop-shadow-md" onError={(e) => e.currentTarget.style.display='none'} />
+          <img src="/assets/face.png" alt="Face" className="h-10 w-10 drop-shadow-md" onError={(e) => e.currentTarget.style.display = 'none'} />
           
           <div className="flex items-end gap-2">
-             <img src="/assets/towel.png" alt="Washcloth" className="w-28 h-24 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src="https://placehold.co/80x60/f8fafc/94a3b8?text=Cloth"}} />
-             <img src="/assets/soap.png" alt="Soap" className="w-24 h-16 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src="https://placehold.co/60x40/fcd34d/b45309?text=Soap"}} />
+            <img src="/assets/towel.png" alt="Washcloth" className="h-24 w-28 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src = "https://placehold.co/80x60/f8fafc/94a3b8?text=Cloth" }} />
+            <img src="/assets/soap.png" alt="Soap" className="h-16 w-24 object-contain drop-shadow-xl" onError={(e) => { e.currentTarget.src = "https://placehold.co/60x40/fcd34d/b45309?text=Soap" }} />
           </div>
         </div>
 

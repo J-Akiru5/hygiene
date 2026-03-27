@@ -11,19 +11,18 @@ interface CanvasEraserProps {
   playScrub?: (isScrubbing: boolean) => void;
 }
 
-// Approximate hitboxes relative to canvas width/height (0.0 to 1.0)
+// Hitboxes tuned to the current character art framing.
 const ZONES = [
-  { id: "Teeth", tool: "Toothbrush", rects: [{ x: 0.35, y: 0.65, w: 0.3, h: 0.15 }] },
+  { id: "Teeth", tool: "Toothbrush", rects: [{ x: 0.37, y: 0.54, w: 0.27, h: 0.13 }] },
   { id: "Ears", tool: "Cotton Swab", rects: [
-    { x: 0.05, y: 0.35, w: 0.20, h: 0.25 }, // Left Ear
-    { x: 0.75, y: 0.35, w: 0.20, h: 0.25 }  // Right Ear
+    { x: 0.19, y: 0.37, w: 0.17, h: 0.25 }, // Left Ear
+    { x: 0.64, y: 0.37, w: 0.17, h: 0.25 }  // Right Ear
   ]},
-  { id: "Face", tool: "Washcloth", rects: [{ x: 0.25, y: 0.20, w: 0.5, h: 0.45 }] },
+  { id: "Face", tool: "Washcloth", rects: [{ x: 0.29, y: 0.23, w: 0.43, h: 0.39 }] },
 ];
 
 export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub }: CanvasEraserProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastPos, setLastPos] = useState<{ x: number; y: number } | null>(null);
@@ -203,14 +202,13 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
 
   return (
     <div 
-      ref={containerRef}
-      className="relative w-full max-w-xl mx-auto rounded-3xl shadow-2xl bg-transparent group cursor-crosshair touch-none select-none drop-shadow-2xl flex items-end"
+      className="relative w-full bg-transparent group cursor-crosshair touch-none select-none"
     >
       {/* Base Image underneath */}
       <img
         src={winState ? "/assets/girl-happy.png" : "/assets/girl-clean.png"}
         alt="Clean Face"
-        className="w-full h-auto object-contain pointer-events-none block"
+        className="w-full h-auto pointer-events-none block"
       />
       
       {/* Dirt overlay canvas on top */}
