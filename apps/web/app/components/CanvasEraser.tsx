@@ -13,7 +13,7 @@ interface CanvasEraserProps {
 
 // Hitboxes tuned to the current character art framing.
 const ZONES = [
-  { id: "Teeth", tool: "Toothbrush", rects: [{ x: 0.37, y: 0.54, w: 0.27, h: 0.13 }] },
+  { id: "Teeth", tool: "Toothbrush", rects: [{ x: 0.30, y: 0.40, w: 0.30, h: 0.22 }] },
   { id: "Ears", tool: "Cotton Swab", rects: [
     { x: 0.19, y: 0.37, w: 0.17, h: 0.25 }, // Left Ear
     { x: 0.64, y: 0.37, w: 0.17, h: 0.25 }  // Right Ear
@@ -57,7 +57,7 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
     if (!ctx) return;
 
     const cleanImg = new Image();
-    cleanImg.src = "/assets/girl-clean.png";
+    cleanImg.src = "/assets/girl-happy.png";
     const overlayImg = new Image();
     overlayImg.src = "/assets/girl-dirty.png";
 
@@ -299,7 +299,7 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
     >
       {/* Base Image underneath */}
       <img
-        src={winState ? "/assets/girl-happy.png" : "/assets/girl-clean.png"}
+        src="/assets/girl-happy.png"
         alt="Clean Face"
         className="w-full h-auto pointer-events-none block"
       />
