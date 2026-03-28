@@ -23,7 +23,7 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
         
         {/* Tool 1: Toothbrush */}
         <div 
-          onClick={() => setActiveTool("Toothbrush")}
+          onMouseEnter={() => setActiveTool("Toothbrush")}
           className={`flex flex-col items-center gap-1 cursor-pointer transition-transform duration-200 p-2 rounded-2xl ${activeTool === "Toothbrush" ? "scale-[1.07] bg-white/20 ring-4 ring-white/50" : "hover:scale-105"}`}
         >
           {/* Target Icon */}
@@ -37,7 +37,7 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
 
         {/* Tool 2: Cotton Swabs */}
         <div 
-          onClick={() => setActiveTool("Cotton Swab")}
+          onMouseEnter={() => setActiveTool("Cotton Swab")}
           className={`relative flex flex-col items-center gap-2 cursor-pointer transition-transform duration-200 p-2 rounded-2xl ${activeTool === "Cotton Swab" ? "scale-[1.07] bg-white/20 ring-4 ring-white/50" : "hover:scale-105"}`}
         >
           {/* Pointer Hint - Only shows if no tool is selected yet */}
@@ -54,7 +54,7 @@ export function ToolTray({ activeTool, setActiveTool }: ToolTrayProps) {
 
         {/* Tool 3: Washcloth */}
         <div 
-          onClick={() => setActiveTool("Washcloth")}
+          onMouseEnter={() => setActiveTool("Washcloth")}
           className={`flex flex-col items-center gap-2 cursor-pointer transition-transform duration-200 p-2 rounded-2xl ${activeTool === "Washcloth" ? "scale-[1.07] bg-white/20 ring-4 ring-white/50" : "hover:scale-105"}`}
         >
           <img src="/assets/face.png" alt="Face" className="h-[5vh] w-auto drop-shadow-md" onError={(e) => e.currentTarget.style.display = 'none'} />
