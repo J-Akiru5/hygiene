@@ -27,6 +27,9 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastPos, setLastPos] = useState<{ x: number; y: number } | null>(null);
   const [baselinePixels, setBaselinePixels] = useState<number>(0);
+  const [dirtMask, setDirtMask] = useState<Uint8Array | null>(null);
+  const [warningMsg, setWarningMsg] = useState<{ x: number, y: number, text: string } | null>(null);
+  const warningTimer = useRef<NodeJS.Timeout | null>(null);
 
   interface Particle { id: number; x: number; y: number; size: number; color: string; }
   const [particles, setParticles] = useState<Particle[]>([]);
@@ -53,9 +56,15 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
+    const cleanImg = new Image();
+    cleanImg.src = "/assets/girl-clean.png";
     const overlayImg = new Image();
     overlayImg.src = "/assets/girl-dirty.png";
-    overlayImg.onload = () => {
+
+    Promise.all([
+      new Promise(r => { cleanImg.onload = r; cleanImg.onerror = r; }),
+      new Promise(r => { overlayImg.onload = r; overlayImg.onerror = r; })
+    ]).then(() => {
       // Use image's intrinsic resolutions for perfect aspect ratio
       canvas.width = overlayImg.width || 800;
       canvas.height = overlayImg.height || 800;
@@ -64,63 +73,83 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
       ctx.globalCompositeOperation = "source-over";
       ctx.drawImage(overlayImg, 0, 0, canvas.width, canvas.height);
       
-      // Calculate baseline opaque pixels ONLY inside the target zones
-      let count = 0;
-      for (const zone of ZONES) {
-        for (const rect of zone.rects) {
-           const rx = Math.floor(rect.x * canvas.width);
-           const ry = Math.floor(rect.y * canvas.height);
-           const rw = Math.floor(rect.w * canvas.width);
-           const rh = Math.floor(rect.h * canvas.height);
-           const imgData = ctx.getImageData(rx, ry, rw, rh);
-           for (let i = 3; i < imgData.data.length; i += 4) {
-             if (imgData.data[i]! > 128) count++;
-           }
+      const dirtyData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      
+      // Draw clean face on an offscreen canvas to compare
+      const baseCanvas = document.createElement("canvas");
+      baseCanvas.width = canvas.width;
+      baseCanvas.height = canvas.height;
+      const baseCtx = baseCanvas.getContext("2d");
+      
+      if (baseCtx) {
+        baseCtx.drawImage(cleanImg, 0, 0, canvas.width, canvas.height);
+        const cleanData = baseCtx.getImageData(0, 0, canvas.width, canvas.height).data;
+        
+        const mask = new Uint8Array(canvas.width * canvas.height);
+        let count = 0;
+        
+        for (let i = 0; i < canvas.width * canvas.height; i++) {
+          const idx = i * 4;
+          const rDiff = Math.abs(cleanData[idx] - dirtyData[idx]);
+          const gDiff = Math.abs(cleanData[idx+1] - dirtyData[idx+1]);
+          const bDiff = Math.abs(cleanData[idx+2] - dirtyData[idx+2]);
+          const aDiff = Math.abs(cleanData[idx+3] - dirtyData[idx+3]);
+          
+          if (rDiff > 20 || gDiff > 20 || bDiff > 20 || aDiff > 20) {
+            // Check if inside ZONES
+            const cx = (i % canvas.width) / canvas.width;
+            const cy = Math.floor(i / canvas.width) / canvas.height;
+            let inZone = false;
+            for (const zone of ZONES) {
+              for (const rect of zone.rects) {
+                if (cx >= rect.x && cx <= rect.x + rect.w && cy >= rect.y && cy <= rect.y + rect.h) {
+                  inZone = true;
+                  break;
+                }
+              }
+              if (inZone) break;
+            }
+            if (inZone) {
+              mask[i] = 1;
+              count++;
+            }
+          }
         }
+        setDirtMask(mask);
+        setBaselinePixels(count > 0 ? count : 1);
+      } else {
+        setBaselinePixels(canvas.width * canvas.height);
       }
-      setBaselinePixels(count > 0 ? count : 1);
-    };
-    overlayImg.onerror = () => {
-      canvas.width = 800;
-      canvas.height = 800;
-      ctx.fillStyle = "rgba(120, 90, 60, 0.9)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      setBaselinePixels(canvas.width * canvas.height);
-    };
+    });
   }, []);
 
   const calculateProgress = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || baselinePixels === 0) return;
+    if (!canvas || baselinePixels === 0 || !dirtMask) return;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
     let currentOpaque = 0;
-    for (const zone of ZONES) {
-      for (const rect of zone.rects) {
-         const rx = Math.floor(rect.x * canvas.width);
-         const ry = Math.floor(rect.y * canvas.height);
-         const rw = Math.floor(rect.w * canvas.width);
-         const rh = Math.floor(rect.h * canvas.height);
-         const imgData = ctx.getImageData(rx, ry, rw, rh);
-         for (let i = 3; i < imgData.data.length; i += 4) {
-           if (imgData.data[i]! > 128) currentOpaque++;
-         }
-      }
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    
+    for (let i = 0; i < canvas.width * canvas.height; i++) {
+       if (dirtMask[i] === 1) {
+          if (imgData[i * 4 + 3] > 128) {
+             currentOpaque++;
+          }
+       }
     }
 
     const removed = baselinePixels - currentOpaque;
     let progress = (removed / baselinePixels) * 100;
+    
     // Cap at 100
     if (progress > 100) progress = 100;
     if (progress < 0) progress = 0;
     
-    // Scale so that 95% threshold triggers early win easily
-    // progress = Math.min(100, progress * 1.05); 
-    
     // Smooth to nearest integer
     onProgressChange(progress);
-  }, [baselinePixels, onProgressChange]);
+  }, [baselinePixels, onProgressChange, dirtMask]);
 
   const getCanvasCoords = (e: React.PointerEvent) => {
     const canvas = canvasRef.current;
@@ -158,6 +187,41 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
     return false;
   };
 
+  const showWarning = (x: number, y: number, pageX: number, pageY: number) => {
+    let targetZone = null;
+    let insideAnyRect = false;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    for (const zone of ZONES) {
+      if (zone.tool !== activeTool) {
+        for (const rect of zone.rects) {
+          const rx = rect.x * canvas.width;
+          const ry = rect.y * canvas.height;
+          const rw = rect.w * canvas.width;
+          const rh = rect.h * canvas.height;
+          const margin = 40;
+          if (x >= rx - margin && x <= rx + rw + margin && y >= ry - margin && y <= ry + rh + margin) {
+            targetZone = zone;
+            insideAnyRect = true;
+            break;
+          }
+        }
+      }
+      if (insideAnyRect) break;
+    }
+
+    if (warningTimer.current) clearTimeout(warningTimer.current);
+    
+    if (targetZone) {
+      setWarningMsg({ x: pageX, y: pageY, text: `Use the ${targetZone.tool} here!` });
+    } else {
+      setWarningMsg({ x: pageX, y: pageY, text: "Nothing to clean here!" });
+    }
+    
+    warningTimer.current = setTimeout(() => setWarningMsg(null), 1500);
+  };
+
   const startDrawing = (e: React.PointerEvent) => {
     // Need a tool to scrub
     if (!activeTool) return;
@@ -166,7 +230,10 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
     
     e.preventDefault();
     const { x, y } = getCanvasCoords(e);
-    if (!isPointInValidZone(x, y)) return;
+    if (!isPointInValidZone(x, y)) {
+      showWarning(x, y, e.clientX, e.clientY);
+      return;
+    }
     
     setIsDrawing(true);
     setLastPos({ x, y });
@@ -266,6 +333,16 @@ export function CanvasEraser({ activeTool, onProgressChange, winState, playScrub
           />
         ))}
       </div>
+
+      {/* Soft Warning Overlay */}
+      {warningMsg && (
+        <div 
+          className="fixed z-[10000] pointer-events-none bg-red-500 text-white font-bold px-4 py-2 rounded-xl shadow-lg border-2 border-white animate-bounce"
+          style={{ left: warningMsg.x, top: warningMsg.y - 60, transform: 'translateX(-50%)' }}
+        >
+          {warningMsg.text}
+        </div>
+      )}
     </div>
   );
 }
